@@ -1,0 +1,31 @@
+{
+  "name": "porter",
+  "version": "0.0.1",
+  "description": "your music porter",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "thelostone",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "compression": "^1.7.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "glob": "^7.1.2",
+    "method-override": "^2.3.9",
+    "morgan": "^1.8.2",
+    "pug": "^2.0.0-rc.2",
+    "querystring": "^0.2.0",
+    "request": "^2.81.0",
+    "underscore": "^1.8.3",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-nodemon": "^2.2.1"
+  }
+}
