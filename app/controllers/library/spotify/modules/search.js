@@ -5,10 +5,17 @@ const request = require('request'),
 /**
  * Search album / artist / playlist / track
  * search : search query (Required)
+ *    wildcard  : *
+ *    operator  : NOT, OR
+ *    year      : Date
+ *    tag       : [hipster, new] Only when type == album
+ *    genre     : String. Only when type == ['artist' , 'track']
  * type   : Array ['album', 'artist', 'playlist','track'] (Required)
  * market : String (locale)
  * limit  : Default 20, Min : 1, Max : 50
  * offset : Default 0, Max 100.000
+ *
+ * Note   : Specific user search happens via their playlist name
  */
 const searchBox = (_searchItem) => {
   return new Promise((resolve, reject) => {
@@ -65,6 +72,8 @@ const searchBox = (_searchItem) => {
       options.qs.offset = _searchItem.offset;
     if(_searchItem.limit)
       options.qs.limit = _searchItem.limit;
+    if(_searchItem.market)
+      options.qs.market = _searchItem.market;
 
     request.get(options, function(error, response, searchResult) {
       if(error) {

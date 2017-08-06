@@ -11,7 +11,8 @@ module.exports = (app) => {
     let searchItem = {
       type: ['track'],
       query: "To all of you",
-      limit: 5
+      limit: 5,
+      market: 'US'
     };
 
     search.searchBox(searchItem).then((matches, response) => {
