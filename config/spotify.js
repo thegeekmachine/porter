@@ -5,6 +5,6 @@ module.exports = {
   redirect_uri: 'http://localhost:8888/callback/',
   accToken: "", refToken: "",
   stateKey: "spotify_auth_state",
-  scope: "user-read-private user-read-email playlist-read-private playlist-modify-public playlist-modify-private",
+  scope: "user-read-private user-read-email playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative",
   "user_info" : ""
 };

@@ -2,17 +2,69 @@ const request = require('request'),
       config = require('../../../../../config/spotify');
 
 /**
- * Fetches songs from a playlist
+ * Fetches tracks and additional data of a playlist
  * _playistId : String (Required)
  * _userId    : String (Defaults to logged in user)
+ * fields     : Limit fields.
+ *              collaborative,tracks.items(track(id, name,href,album(name,id)))
  */
-const fetchPlaylistSongs = (_playistId, _userId) => {
+ const fetchPlaylist =(_playist, _userId) => {
+   return new Promise((resolve, reject) => {
+     let _error = {
+       name: "fetchPlaylist",
+     };
+
+     if(!_playist && !_playist.id) {
+       _error.msg = "input data invalid";
+       reject(_error);
+     }
+
+     if(!config.accToken) {
+       _error.msg = "access_token is null";
+       reject(_error);
+     }
+
+     const userId = _userId ? _userId : config.user_info.id;
+     const url = config.base_uri + "/v1/users/" + userId + "/playlists/" +
+       _playist.id;
+
+     let options = {
+       url: url,
+       headers: { 'Authorization': 'Bearer ' + config.accToken },
+       json: true,
+     };
+
+     if(_playist.fields) {
+       // TODO: Validate fields
+       options.qs = {
+         fields: _playist.fields
+       }
+     }
+
+     request.get(options, function(error, response, songs) {
+       if(error) {
+         _error.msg = "error fetching songs of " + _playistId;
+         _error.stack = error;
+         reject(_error);
+       }
+       resolve(songs, response);
+     });
+   });
+ };
+
+/**
+ * Fetches songs from a playlist. Subset of fetchPlaylist
+ * _playistId : String (Required)
+ * _userId    : String (Defaults to logged in user)
+ * fields     : Limit fields. items(track(id, name,href,album(name,id)))
+ */
+const fetchPlaylistSongs = (_playist, _userId, fields) => {
   return new Promise((resolve, reject) => {
     let _error = {
       name: "fetchPlaylistSongs",
     };
 
-    if(!_playistId) {
+    if(!_playist && !_playist.id) {
       _error.msg = "input data invalid";
       reject(_error);
     }
@@ -24,13 +76,20 @@ const fetchPlaylistSongs = (_playistId, _userId) => {
 
     const userId = _userId ? _userId : config.user_info.id;
     const url = config.base_uri + "/v1/users/" + userId + "/playlists/" +
-      _playistId + "/tracks";
+      _playist.id + "/tracks";
 
-    const options = {
+    let options = {
       url: url,
       headers: { 'Authorization': 'Bearer ' + config.accToken },
       json: true,
     };
+
+    if(_playist.fields) {
+      // TODO: Validate fields
+      options.qs = {
+        fields: _playist.fields
+      }
+    }
 
     request.get(options, function(error, response, songs) {
       if(error) {
@@ -247,6 +306,7 @@ const modifyTracks = (_playlist, addTracks) => {
 };
 
 module.exports = {
+  fetchPlaylist,
   fetchPlaylistSongs,
   fetchPlaylists,
   createPlaylist,

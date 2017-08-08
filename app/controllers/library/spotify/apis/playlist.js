@@ -7,8 +7,29 @@ const LOGIN_URL = "http://localhost:8888/login";
 module.exports = (app) => {
   app.use('/', router);
 
+  router.get('/spotify/fetchPlaylistInfo', (req, res) => {
+    const _playlist = {
+      id: "0yedmMJyjlzpF4kF078O92",
+      fields: "collaborative,tracks.items(track(id, name,href,album(name,id)))"
+    };
+
+    playlist.fetchPlaylist(_playlist).then((songs) => {
+      res.send(songs);
+    }).catch((error) => {
+      if(error.msg.includes("access_token is null"))
+        res.redirect(LOGIN_URL);
+      else
+        res.send(error);
+    });
+  });
+
   router.get('/spotify/fetchPlaylistSongs', (req, res) => {
-    playlist.fetchPlaylistSongs('0yedmMJyjlzpF4kF078O92').then((songs) => {
+    const _playlist = {
+      id: "0yedmMJyjlzpF4kF078O92",
+      fields: "items(track(id, name,href,album(name,id)))"
+    };
+
+    playlist.fetchPlaylistSongs(_playlist).then((songs) => {
       res.send(songs);
     }).catch((error) => {
       if(error.msg.includes("access_token is null"))
