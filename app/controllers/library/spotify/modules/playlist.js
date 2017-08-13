@@ -8,7 +8,7 @@ const request = require('request'),
  * fields     : Limit fields.
  *              collaborative,tracks.items(track(id, name,href,album(name,id)))
  */
- const fetchPlaylist =(_playist, _userId) => {
+ const fetchPlaylist = async (_playist, _userId) => {
    return new Promise((resolve, reject) => {
      let _error = {
        name: "fetchPlaylist",
@@ -58,7 +58,7 @@ const request = require('request'),
  * _userId    : String (Defaults to logged in user)
  * fields     : Limit fields. items(track(id, name,href,album(name,id)))
  */
-const fetchPlaylistSongs = (_playist, _userId, fields) => {
+const fetchPlaylistSongs = async (_playist, _userId, fields) => {
   return new Promise((resolve, reject) => {
     let _error = {
       name: "fetchPlaylistSongs",
@@ -106,7 +106,7 @@ const fetchPlaylistSongs = (_playist, _userId, fields) => {
  * Fetches playist of userId or currently logged in user
  * _userId: String
  */
-const fetchPlaylists = (_userId) => {
+const fetchPlaylists = async (_userId) => {
   return new Promise((resolve, reject) => {
     let _error = {
       name: "fetchPlaylists",
@@ -143,7 +143,7 @@ const fetchPlaylists = (_userId) => {
  * description : String
  * public      : Boolean
  */
-const createPlaylist = (_newPlaylist) => {
+const createPlaylist = async (_newPlaylist) => {
   return new Promise((resolve, reject) => {
     let _error = {
       name: "createPlaylist",
