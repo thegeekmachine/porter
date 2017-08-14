@@ -17,7 +17,7 @@ const request = require('request'),
  *
  * Note   : Specific user search happens via their playlist name
  */
-const searchBox = (_searchItem) => {
+const searchBox = async (_searchItem) => {
   return new Promise((resolve, reject) => {
     const types = ['album', 'artist', 'playlist','track'];
     let _error = {
