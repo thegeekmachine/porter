@@ -11,7 +11,7 @@ function User(id) {
 function UserAuthorizedService(id) {
 
     const id = id;
-    let service;
+    let service; // Service
     let refreshToken;
     let refreshedAt;
     let clientScopes;
