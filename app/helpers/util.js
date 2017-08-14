@@ -10,4 +10,4 @@ const generateRandomString = (length) => {
 
 module.exports = {
   generateRandomString
-}
+};
