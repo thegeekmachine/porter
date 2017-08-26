@@ -15,7 +15,7 @@ amqp.connect('amqp://localhost', (err, conn) => {
     ch.consume(queue, async (playlist) => {
       //console.log(" [x] Received %s", playlist.content.toString());
       const msg = JSON.parse(playlist.content.toString());
-      const id = queue + "_"+ msg.ownerId.toString() + "_" + msg.uri.toString();
+      const id = queue + "_"+ msg.ownerId + "_" + msg.uri;
 
       ch.sendToQueue(
         playlist.properties.replyTo,
