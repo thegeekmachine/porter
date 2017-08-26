@@ -21,6 +21,7 @@ const searchBox = async (_searchItem) => {
   return new Promise((resolve, reject) => {
     const types = ['album', 'artist', 'playlist','track'];
     let _error = {
+      service: "spotify",
       name: "searchBox",
     };
 
@@ -52,7 +53,7 @@ const searchBox = async (_searchItem) => {
     }
 
     if(!config.accToken) {
-      _error.msg = "access_token is null";
+      _error.msg = "unauthorized service. access_token is null";
       reject(_error);
     }
 

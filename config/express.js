@@ -26,8 +26,10 @@ module.exports = (app, config) => {
 
   const controllers = glob.sync(config.root + '/app/controllers/**/**/**/*.js');
   controllers.forEach((controller) => {
-    if(!controller.includes('/modules/')) {
+    if(!controller.includes('/modules/') && !controller.includes('/MQ/')) {
       require(controller)(app);
+    } else {
+      require(controller);
     }
   });
 

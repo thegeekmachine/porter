@@ -3,30 +3,33 @@ const request = require('request'),
 
 /**
  * Fetches tracks and additional data of a playlist
- * _playistId : String (Required)
- * _userId    : String (Defaults to logged in user)
- * fields     : Limit fields.
+ * _playlist.id     : String (Required)
+ * _playlist.fields : Limit fields.
  *              collaborative,tracks.items(track(id, name,href,album(name,id)))
+ * _userId          : String (Defaults to logged in user)
  */
- const fetchPlaylist = async (_playist, _userId) => {
+ const fetchPlaylist = async (_playlist, _userId) => {
    return new Promise((resolve, reject) => {
      let _error = {
+       service: "spotify",
        name: "fetchPlaylist",
      };
 
-     if(!_playist && !_playist.id) {
+     if(!_playlist && !_playlist.id) {
        _error.msg = "input data invalid";
        reject(_error);
      }
 
      if(!config.accToken) {
-       _error.msg = "access_token is null";
+       _error.msg = "unauthorized service. access_token is null";
        reject(_error);
      }
 
+     console.log(config.accToken);
+
      const userId = _userId ? _userId : config.user_info.id;
      const url = config.base_uri + "/v1/users/" + userId + "/playlists/" +
-       _playist.id;
+       _playlist.id;
 
      let options = {
        url: url,
@@ -34,16 +37,16 @@ const request = require('request'),
        json: true,
      };
 
-     if(_playist.fields) {
+     if(_playlist.fields) {
        // TODO: Validate fields
        options.qs = {
-         fields: _playist.fields
+         fields: _playlist.fields
        }
      }
 
      request.get(options, function(error, response, songs) {
        if(error) {
-         _error.msg = "error fetching songs of " + _playistId;
+         _error.msg = "error fetching songs of " + _playlist.id;
          _error.stack = error;
          reject(_error);
        }
@@ -54,29 +57,30 @@ const request = require('request'),
 
 /**
  * Fetches songs from a playlist. Subset of fetchPlaylist
- * _playistId : String (Required)
- * _userId    : String (Defaults to logged in user)
- * fields     : Limit fields. items(track(id, name,href,album(name,id)))
+ * _playlist.id     : String (Required)
+ * _playlist.fields : Limit fields. items(track(id, name,href,album(name,id)))
+ * _userId          : String (Defaults to logged in user)
  */
-const fetchPlaylistSongs = async (_playist, _userId, fields) => {
+const fetchPlaylistTracks = async (_playlist, _userId) => {
   return new Promise((resolve, reject) => {
     let _error = {
-      name: "fetchPlaylistSongs",
+      service: "spotify",
+      name: "fetchPlaylistTracks",
     };
 
-    if(!_playist && !_playist.id) {
-      _error.msg = "input data invalid";
+    if(!_playlist && !_playlist.id) {
+      _error.msg = "playlistId is null";
       reject(_error);
     }
 
     if(!config.accToken) {
-      _error.msg = "access_token is null";
+      _error.msg = "unauthorized service. access_token is null";
       reject(_error);
     }
 
     const userId = _userId ? _userId : config.user_info.id;
     const url = config.base_uri + "/v1/users/" + userId + "/playlists/" +
-      _playist.id + "/tracks";
+      _playlist.id + "/tracks";
 
     let options = {
       url: url,
@@ -84,16 +88,16 @@ const fetchPlaylistSongs = async (_playist, _userId, fields) => {
       json: true,
     };
 
-    if(_playist.fields) {
+    if(_playlist.fields) {
       // TODO: Validate fields
       options.qs = {
-        fields: _playist.fields
+        fields: _playlist.fields
       }
     }
 
     request.get(options, function(error, response, songs) {
       if(error) {
-        _error.msg = "error fetching songs of " + _playistId;
+        _error.msg = "error fetching songs of " + _playlist.id;
         _error.stack = error;
         reject(_error);
       }
@@ -103,17 +107,19 @@ const fetchPlaylistSongs = async (_playist, _userId, fields) => {
 };
 
 /**
- * Fetches playist of userId or currently logged in user
- * _userId: String
+ * Fetches playlist of userId or currently logged in user
+ * _fields : Limit fields
+ * _userId : String (Defaults to logged in user)
  */
-const fetchPlaylists = async (_userId) => {
+const fetchPlaylists = async (_fields, _userId) => {
   return new Promise((resolve, reject) => {
     let _error = {
+      service: "spotify",
       name: "fetchPlaylists",
     }
-    const name = fetchPlaylists;
+
     if(!config.accToken) {
-      _error.msg = "access_token is null";
+      _error.msg = "unauthorized service. access_token is null";
       reject(_error);
     }
 
@@ -125,6 +131,13 @@ const fetchPlaylists = async (_userId) => {
       headers: { 'Authorization': 'Bearer ' + config.accToken },
       json: true
     };
+
+    if(_fields) {
+      // TODO: Validate fields
+      options.qs = {
+        fields: _fields
+      }
+    }
 
     request.get(options, function(err, response, playlists) {
       if(err) {
@@ -146,6 +159,7 @@ const fetchPlaylists = async (_userId) => {
 const createPlaylist = async (_newPlaylist) => {
   return new Promise((resolve, reject) => {
     let _error = {
+      service: "spotify",
       name: "createPlaylist",
     };
 
@@ -159,7 +173,7 @@ const createPlaylist = async (_newPlaylist) => {
     }
 
     if(!config.accToken) {
-      _error.msg = "access_token is null";
+      _error.msg = "unauthorized service. access_token is null";
       reject(_error);
     }
 
@@ -193,6 +207,7 @@ const createPlaylist = async (_newPlaylist) => {
  */
 const modifyPlaylistDetails = (_playlist) => {
   let _error = {
+    service: "spotify",
     name: "modifyPlaylistDetails",
   };
 
@@ -201,7 +216,7 @@ const modifyPlaylistDetails = (_playlist) => {
     throw _error;
   }
   if(!_playlist.id) {
-    _error.msg = "playistId not provided";
+    _error.msg = "playlistId not provided";
     throw _error;
   }
   if(!_playlist.details.name && !_playlist.details.description
@@ -211,7 +226,7 @@ const modifyPlaylistDetails = (_playlist) => {
   }
 
   if(!config.accToken) {
-    _error.msg = "access_token is null";
+    _error.msg = "unauthorized service. access_token is null";
     throw _error;
   }
 
@@ -249,6 +264,7 @@ const modifyPlaylistDetails = (_playlist) => {
  */
 const modifyTracks = (_playlist, addTracks) => {
   let _error = {
+    service: "spotify",
     name: "modifyTracks",
   };
 
@@ -261,12 +277,12 @@ const modifyTracks = (_playlist, addTracks) => {
     throw _error;
   }
   if(!_playlist.id) {
-    _error.msg = "playistId not provided";
+    _error.msg = "playlistId not provided";
     throw _error;
   }
 
   if(!config.accToken) {
-    _error.msg = "access_token is null";
+    _error.msg = "unauthorized service. access_token is null";
     throw _error;
   }
 
@@ -307,7 +323,7 @@ const modifyTracks = (_playlist, addTracks) => {
 
 module.exports = {
   fetchPlaylist,
-  fetchPlaylistSongs,
+  fetchPlaylistTracks,
   fetchPlaylists,
   createPlaylist,
   modifyPlaylistDetails,
