@@ -5,6 +5,12 @@ const path = require("path"),
 const config = {
   development: {
     root: rootPath,
+    mysql: {
+      host: '127.0.0.1',
+      user: 'thelostone',
+      password: 'tgm',
+      database: 'porter'
+    },
     app: {
       name: 'porter'
     },
@@ -13,6 +19,12 @@ const config = {
 
   production: {
     root: rootPath,
+    mysql: {
+      host: '127.0.0.1',
+      user: 'thelostone',
+      password: 'tgm',
+      database: 'porter'
+    },
     app: {
       name: 'porter'
     },
